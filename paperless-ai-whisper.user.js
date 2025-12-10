@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Paperless-AI Voice Input (Groq Whisper)
 // @namespace    https://github.com/KaiserUndGott/PPL-AI-Whisper
-// @version      1.1.0
+// @version      1.2.0
 // @description  Spracheingabe für Paperless-AI RAG Chat via Groq Whisper API
 // @author       KaiserUndGott
 // @match        http://192.168.128.2:8086/*
@@ -59,47 +59,43 @@
         voiceButton.id = 'ppl-ai-whisper-btn';
         voiceButton.innerHTML = '🎤';
         voiceButton.title = 'Klicken um Sprachaufnahme zu starten/stoppen';
-        voiceButton.type = 'button'; // Verhindert Form-Submit
+        voiceButton.type = 'button';
+        
+        // FIXED Position mit maximaler Sichtbarkeit
         voiceButton.style.cssText = `
-            position: absolute;
-            right: 60px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #3b82f6;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            font-size: 20px;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: block !important;
+            position: fixed !important;
+            right: 30px !important;
+            bottom: 30px !important;
+            width: 56px !important;
+            height: 56px !important;
+            background: #3b82f6 !important;
+            border: none !important;
+            border-radius: 50% !important;
+            font-size: 28px !important;
+            cursor: pointer !important;
+            z-index: 2147483647 !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+            transition: all 0.3s ease !important;
         `;
         
         // Hover-Effekt
         voiceButton.addEventListener('mouseenter', () => {
             if (!isRecording) {
-                voiceButton.style.transform = 'translateY(-50%) scale(1.1)';
+                voiceButton.style.transform = 'scale(1.1)';
             }
         });
         voiceButton.addEventListener('mouseleave', () => {
             if (!isRecording) {
-                voiceButton.style.transform = 'translateY(-50%) scale(1)';
+                voiceButton.style.transform = 'scale(1)';
             }
         });
         
         // Click-Handler
         voiceButton.addEventListener('click', toggleRecording);
         
-        // Parent-Container relativ positionieren
-        const parent = inputArea.parentElement;
-        if (window.getComputedStyle(parent).position === 'static') {
-            parent.style.position = 'relative';
-        }
-        
-        // Button hinzufügen
-        parent.appendChild(voiceButton);
+        // Button direkt an body anhängen (nicht an Parent-Container)
+        document.body.appendChild(voiceButton);
         console.log('[PPL-AI-Whisper] Mikrofon-Button erfolgreich hinzugefügt!');
     }
     
@@ -152,7 +148,7 @@
             
             // Button-Zustand ändern
             voiceButton.innerHTML = '⏹️';
-            voiceButton.style.background = '#ef4444';
+            voiceButton.style.background = '#ef4444 !important';
             voiceButton.style.animation = 'pulse 1.5s infinite';
             voiceButton.title = 'Klicken um Aufnahme zu stoppen';
             
@@ -162,8 +158,8 @@
                 style.id = 'ppl-ai-whisper-style';
                 style.textContent = `
                     @keyframes pulse {
-                        0%, 100% { transform: translateY(-50%) scale(1); }
-                        50% { transform: translateY(-50%) scale(1.1); }
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.15); }
                     }
                 `;
                 document.head.appendChild(style);
@@ -190,7 +186,7 @@
         
         // Button-Zustand: Verarbeitung läuft
         voiceButton.innerHTML = '⏳';
-        voiceButton.style.background = '#f59e0b';
+        voiceButton.style.background = '#f59e0b !important';
         voiceButton.style.animation = 'none';
         voiceButton.title = 'Transkribiere Audio...';
         voiceButton.disabled = true;
@@ -270,10 +266,11 @@
     
     function resetButton() {
         voiceButton.innerHTML = '🎤';
-        voiceButton.style.background = '#3b82f6';
+        voiceButton.style.background = '#3b82f6 !important';
         voiceButton.style.animation = 'none';
         voiceButton.title = 'Klicken um Sprachaufnahme zu starten';
         voiceButton.disabled = false;
+        voiceButton.style.transform = 'scale(1)';
         isRecording = false;
     }
     
