@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Paperless-AI Voice Input (Groq Whisper)
 // @namespace    https://github.com/KaiserUndGott/PPL-AI-Whisper
-// @version      1.0.0
+// @version      1.1.0
 // @description  Spracheingabe für Paperless-AI RAG Chat via Groq Whisper API
 // @author       KaiserUndGott
-// @match        http://*/paperless-ai/*
-// @match        https://*/paperless-ai/*
+// @match        http://192.168.128.2:8086/*
+// @match        http://192.168.128.*:*/*
 // @icon         data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎤</text></svg>
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/KaiserUndGott/PPL-AI-Whisper/main/paperless-ai-whisper.user.js
@@ -38,10 +38,10 @@
     // ============================================================================
     
     function addVoiceButton() {
-        // Finde Input-Feld (Textarea oder Text-Input)
-        const inputArea = document.querySelector('textarea, input[type="text"]');
+        // Finde Chat-Input-Feld (spezifisch für Paperless-AI)
+        const inputArea = document.querySelector('textarea#message-input, textarea.message-input');
         if (!inputArea) {
-            console.log('[PPL-AI-Whisper] Input-Feld nicht gefunden, erneuter Versuch in 1s...');
+            console.log('[PPL-AI-Whisper] Chat-Input nicht gefunden, erneuter Versuch in 1s...');
             setTimeout(addVoiceButton, 1000);
             return;
         }
@@ -52,7 +52,7 @@
             return;
         }
         
-        console.log('[PPL-AI-Whisper] Input-Feld gefunden, füge Mikrofon-Button hinzu...');
+        console.log('[PPL-AI-Whisper] Chat-Input gefunden, füge Mikrofon-Button hinzu...');
         
         // Button erstellen
         voiceButton = document.createElement('button');
@@ -62,7 +62,7 @@
         voiceButton.type = 'button'; // Verhindert Form-Submit
         voiceButton.style.cssText = `
             position: absolute;
-            right: 10px;
+            right: 60px;
             top: 50%;
             transform: translateY(-50%);
             background: #3b82f6;
@@ -231,8 +231,8 @@
             const result = await response.json();
             console.log('[PPL-AI-Whisper] Transkription erfolgreich:', result.text);
             
-            // Text in Input-Feld einfügen
-            const inputField = document.querySelector('textarea, input[type="text"]');
+            // Text in Chat-Input einfügen
+            const inputField = document.querySelector('textarea#message-input, textarea.message-input');
             if (inputField) {
                 inputField.value = result.text;
                 inputField.focus();
